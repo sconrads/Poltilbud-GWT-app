@@ -3,6 +3,10 @@ package no.poltilbud.site.client;
 import no.poltilbud.site.client.widget.SortableTable;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -13,10 +17,14 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
 import com.google.gwt.user.client.ui.HTMLTable.RowFormatter;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.xml.client.DOMException;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Node;
@@ -60,6 +68,8 @@ public class PoltilbudOfferSite implements EntryPoint {
 		} catch (RequestException ex) {
 			requestFailed(ex);
 		}
+		
+		final Button aboutUs = new Button("Informasjon");
 
 		flexTable.setStyleName("sortableTable");
 		flexTable.setBorderWidth(1);
@@ -85,6 +95,52 @@ public class PoltilbudOfferSite implements EntryPoint {
 		}
 		
 		RootPanel.get("slot1").add(flexTable);
+		RootPanel.get("aboutUsContainer").add(aboutUs);
+		
+		// Create the popup dialog box
+		final DialogBox dialogBox = new DialogBox();
+		dialogBox.setText("Informasjon om poltilbud.com");
+		dialogBox.setAnimationEnabled(true);
+		final Button closeButton = new Button("Lukk");
+		// We can set the id of a widget by accessing its Element
+		closeButton.getElement().setId("closeButton");
+		VerticalPanel dialogVPanel = new VerticalPanel();
+		dialogVPanel.addStyleName("dialogVPanel");
+		dialogVPanel.add(new HTML("Poltilbud.com er kun et hobbyprosjekt opprettet for å teste ut nye teknologier."));
+		dialogVPanel.add(new HTML("<br> Android applikasjon er under utvikling."));
+		dialogVPanel.add(new HTML("<br> Kildekoden finner du på <a href=\"http://github.com/sconrads/Poltilbud-GWT-app\">Github </a>"));
+		dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
+		dialogVPanel.add(closeButton);
+		dialogBox.setWidget(dialogVPanel);
+		
+		// Add a handler to close the DialogBox
+		closeButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				dialogBox.hide();
+				aboutUs.setEnabled(true);
+				aboutUs.setFocus(true);
+			}
+		});
+		
+		// Create a handler for the sendButton and nameField
+		class MyHandler implements ClickHandler, KeyUpHandler {
+			/**
+			 * Fired when the user clicks on the sendButton.
+			 */
+			public void onClick(ClickEvent event) {
+				dialogBox.center();
+				closeButton.setFocus(true);
+			}
+
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				dialogBox.center();
+				closeButton.setFocus(true);
+			}
+		}
+		
+		MyHandler handler = new MyHandler();
+		aboutUs.addClickHandler(handler);
 		
 	}
 	
