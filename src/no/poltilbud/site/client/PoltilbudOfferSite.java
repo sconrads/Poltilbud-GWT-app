@@ -82,7 +82,6 @@ public class PoltilbudOfferSite implements EntryPoint {
 		flexTable.addColumnHeader("Pris denne måned", 3);
 		flexTable.addColumnHeader("Nedsatt kr", 4);
 		flexTable.addColumnHeader("Nedsatt i prosent", 5);
-		flexTable.addColumnHeader("Vinmonopolet.no", 6);
 		
 		RowFormatter rowFormatter = flexTable.getRowFormatter();
 		rowFormatter.setStyleName(0, "tableHeader");
@@ -167,7 +166,8 @@ public class PoltilbudOfferSite implements EntryPoint {
 		    	Node childNode = nodeList.item(i);
 		    	  if (childNode.getNodeName().equals("product")) {
 		    		  String name = childNode.getOwnerDocument().getElementsByTagName("name").item(i-1).getFirstChild().getNodeValue();
-		    		  flexTable.setValue(i, 0, name);
+		    		  String url = childNode.getOwnerDocument().getElementsByTagName("url").item(i-1).getFirstChild().getNodeValue();
+		    		  flexTable.setValue(i, 0, new Anchor(name, url).toString());
 		    		  String type = childNode.getOwnerDocument().getElementsByTagName("type").item(i-1).getFirstChild().getNodeValue();
 		    		  flexTable.setValue(i, 1, type);
 		    		  String oldPrice = childNode.getOwnerDocument().getElementsByTagName("oldPrice").item(i-1).getFirstChild().getNodeValue();
@@ -181,9 +181,7 @@ public class PoltilbudOfferSite implements EntryPoint {
 		    		  flexTable.setValue(i, 4, differanceDubl);
 		    		  String differancePerc = childNode.getOwnerDocument().getElementsByTagName("differancePerc").item(i-1).getFirstChild().getNodeValue();
 		    		  Double differancePercDubl = Double.parseDouble(differancePerc);
-		    		  flexTable.setValue(i, 5, differancePercDubl);		    		
-		    		  String url = childNode.getOwnerDocument().getElementsByTagName("url").item(i-1).getFirstChild().getNodeValue();
-		    		  flexTable.setWidget(i, 6, new Anchor("Søk etter produkt", url));
+		    		  flexTable.setValue(i, 5, differancePercDubl);		    				    		  
 		    	  }
 
 		    }
